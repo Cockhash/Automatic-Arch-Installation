@@ -146,25 +146,32 @@ echo "--------------------------------------"
 pacstrap -i /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
+
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"
+
 # Disable grub delay
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
+
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub_uefi --recheck --debug
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 grub-mkconfig -o /boot/grub/grub.cfg
+
 echo "--------------------------------------"
 echo "--    Configure system properly     --"
 echo "--------------------------------------"
+
 echo "Setting and generating locale"
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 export LANG=en_US.UTF-8
+
 echo "Setting time zone"
 ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
 echo "Setting core building"
 nc=$(grep -c ^processor /proc/cpuinfo)
 echo "You have " $nc" cores."
@@ -172,26 +179,33 @@ echo "Changing the makeflags for "$nc" cores."
 sudo sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j$nc"/g' /etc/makepkg.conf
 echo "Changing the compression settings for "$nc" cores."
 sudo sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $nc -z -)/g' /etc/makepkg.conf
+
 echo "Setting hostname"
 echo $hostname > /etc/hostname
+
 echo "Setting root password"
 echo "root:$root_password" | chpasswd
+
 echo "Setting user account"
 sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 useradd -m -g users -G wheel $user
 echo "$user:$user_password" | chpasswd
+
 echo "Set-up swapfile"
 dd if=/dev/zero of=/swapfile bs=1M count=8192 status=progress
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
 echo '/swapfile none swap defaults 0 0' >> /etc/fstab
+
 echo "-------------------------------------------------"
 echo "--  Congratulations! Now you're ready to boot  --"
 echo "-------------------------------------------------"
+
 echo "--------------------------------------"
 echo "--            Optional              --"
 echo "--------------------------------------"
+
 CHROOT
 
 # Install software from official repositorys
@@ -201,16 +215,22 @@ CHROOT
 #./1_software-aur.sh
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
+
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+
 su $user
+
 echo "--------------------------------------"
 echo "--  FINAL SETUP AND CONFIGURATION   --"
 echo "--------------------------------------"
+
 # ------------------------------------------------------------------------
+
 ### Set-up ZSH
 # Change shell
 sudo chsh -s /bin/zsh "$(whoami)"
+
 touch "$HOME/.cache/zshhistory"
 # Fetch zsh config
 wget https://raw.githubusercontent.com/XaiMloop/zsh/master/.zshrc -O ~/.zshrc
@@ -218,35 +238,54 @@ mkdir -p "$HOME/.zsh"
 # Setup Alias in $HOME/zsh/aliasrc
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+
 # ------------------------------------------------------------------------
+
 #echo -e "\nIncreasing file watcher count"
 #
 # This prevents a "too many files" error in Visual Studio Code
 #echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system
+
 # ------------------------------------------------------------------------
+
 echo -e "\nDisabling Pulse .esd_auth module"
+
 # Pulse audio loads the `esound-protocol` module, which best I can tell is rarely needed.
 # That module creates a file called `.esd_auth` in the home directory which I'd prefer to not be there. So...
 sudo sed -i 's|load-module module-esound-protocol-unix|#load-module module-esound-protocol-unix|g' /etc/pulse/default.pa
+
 # ------------------------------------------------------------------------
+
 echo -e "\nEnabling Login Display Manager"
+
 sudo systemctl enable gdm
+
 # ------------------------------------------------------------------------
+
 echo -e "\nEnabling bluetooth daemon and setting it to auto-start"
+
 sudo sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
 sudo systemctl enable bluetooth
+
 # ------------------------------------------------------------------------
+
 echo -e "\nEnabling the cups service daemon so we can print"
+
 systemctl enable org.cups.cupsd.service
 sudo systemctl disable dhcpcd.service
 sudo systemctl enable NetworkManager
+
 # ------------------------------------------------------------------------
+
 sudo su root
+
 # Remove no password sudo rights
 sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+
 echo "-------------------------------------------------"
 echo "--                    Done                     --"
 echo "-------------------------------------------------"
+
 CHROOT
 
 sleep 3

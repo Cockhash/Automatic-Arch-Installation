@@ -132,7 +132,6 @@ PKGS=(
         
     # OTHERS --------------------------------------------------------------
     
-        'timeshift'             # Backup programm  
         'libreoffice'           # Office Suite
         'filezilla'             # SSH File Transfer
 )

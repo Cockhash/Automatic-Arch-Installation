@@ -139,5 +139,5 @@ PKGS=(
 
 for PKG in "${PKGS[@]}"; do
     echo "INSTALLING: ${PKG}"
-    pacstrap /mnt ${PKG} --noconfirm --needed
+    pacman -S ${PKG} --noconfirm --needed
 done

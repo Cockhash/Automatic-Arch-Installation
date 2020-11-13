@@ -217,15 +217,11 @@ echo "--------------------------------------"
 echo "--            Optional              --"
 echo "--------------------------------------"
 
-CHROOT
-
 # Install software from official repositorys
 ./1_software-pacman.sh
 
 # Install software from unofficial AUR repositorys
 ./1_software-aur.sh
-
-arch-chroot /mnt /bin/bash <<"CHROOT"
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+arch-chroot /mnt /bin/bash <<"CHROOT"
+
 echo "--------------------------------------"
 echo "--      Install AUR packages        --"
 echo "--------------------------------------"
@@ -14,27 +16,22 @@ makepkg -srci --noconfirm
 
 PKGS=(
     # UTILITIES -----------------------------------------------------------
+    
         'freeoffice'                # Office Alternative
+        
     # MEDIA ---------------------------------------------------------------
     
-        'lbry-app-bin'              # LBRY Linux Application
         'rambox-bin'                # Social Media Client-Set
+        
     # ZSH Utilities ------------------------------------------------------
     
         'zsh-autosuggestions'
         'zsh-syntax-highlighting'
         'autojump'
-        
-    # THEMES --------------------------------------------------------------
-    
-        'materia-gtk-theme'             # Desktop Theme
-        'plata-theme'                   # Desktop Theme 
-        'tela-icon-theme'               # Desktop Icons
-        'papirus-icon-theme'            # Desktop Icons
-        'capitaine-cursors'             # Cursor Themes
-        'gnome-shell-extension-material-shell-git'   # Material Theme
 )
 
 for PKG in "${PKGS[@]}"; do
 yay -Sy --noconfirm $PKG
 done
+
+CHROOT

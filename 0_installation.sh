@@ -47,8 +47,16 @@ echo "--------------------------------------"
 
 lsblk
 
-echo -e "\nSelect drive: /dev/nvme0n1, /dev/nvme0n2 ..."
+echo -e "\nPlease enter your drive: dev/sda, de/sdb, /dev/nvme0n1, /dev/nvme0n2 ..."
 read disk
+
+if [ "$disk" == "/dev/nvm" ]; then
+	root_disk=${disk}"p1"
+	boot_disk=${disk}"p2"
+else
+	root_disk=${disk}"1"
+	boot_disk=${disk}"2"
+fi
 
 echo -e "\nPlease enter hostname:"
 read hostname
@@ -85,15 +93,17 @@ read shutdown
 
 # export environment variabels
 export disk
+export root_disk
+export boot_disk
 export hostname
 export root_password
 export user
 export user_password
 export shutdown
 
-echo "-------------------------------------------------"
-echo "Setting up mirrors for optimal download - DE Only"
-echo "-------------------------------------------------"
+echo "------------------------------------------------------"
+echo "Setting up mirrors for optimal download - Germany Only"
+echo "------------------------------------------------------"
 
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
@@ -108,28 +118,29 @@ sgdisk -Z ${disk} # zap all on disk
 sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1:0:+1024M ${disk} # partition 1 (efi), default start block, 512MB
-sgdisk -n 2:0:0 ${disk} # partition 2 (Root), default start, remaining
+sgdisk -n 2:0:+1024M ${disk} # partition 1 (esp), default start block, 1024MB
+sgdisk -n 1:0:0 ${disk} # partition 2 (Root), default start, remaining
 
 # set partition types
-sgdisk -t 1:ef00 ${disk}
-sgdisk -t 2:8300 ${disk}
+sgdisk -t 1:8300 ${disk}
+sgdisk -t 2:ef00 ${disk}
 
 # label partitions
-sgdisk -c 1:"efi" ${disk}
-sgdisk -c 2:"root" ${disk}
+sgdisk -c 1:"root" ${disk}
+sgdisk -c 2:"esp" ${disk}
+
 
 echo "--------------------------------------"
 echo "--       Creating Filesystems       --"
 echo "--------------------------------------"
 
-mkfs.fat -F32 ${disk}p1
-mkfs.ext4 -F ${disk}p2
+mkfs.ext4 ${root_disk}
+mkfs.fat -F32 ${boot_disk}
 
 # mount target
-mount ${disk}p2 /mnt
+mount ${root_disk} /mnt
 mkdir -p /mnt/boot/efi
-mount ${disk}p1 /mnt/boot/efi
+mount ${boot_disk} /mnt/boot/efi
 
 mkdir /mnt/etc
 genfstab -Up /mnt >> /mnt/etc/fstab

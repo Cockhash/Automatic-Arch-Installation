@@ -10,7 +10,7 @@
 
 # ATTENTION
 #--------------------------------------------------
-# Created by Cockhash
+# Created by cockhash
 #--------------------------------------------------
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ CHROOT
 ./1_software-pacman.sh
 
 # Install software from unofficial AUR repositorys
-#./1_software-aur.sh
+./1_software-aur.sh
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
 
@@ -244,32 +244,18 @@ sudo chsh -s /bin/zsh "$(whoami)"
 
 touch "$HOME/.cache/zshhistory"
 # Fetch zsh config
-wget https://raw.githubusercontent.com/XaiMloop/zsh/master/.zshrc -O ~/.zshrc
+wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
 mkdir -p "$HOME/.zsh"
 # Setup Alias in $HOME/zsh/aliasrc
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+
 # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
-
-# ------------------------------------------------------------------------
-
-#echo -e "\nIncreasing file watcher count"
-#
-# This prevents a "too many files" error in Visual Studio Code
-#echo fs.inotify.max_user_watches=524288 | sudo tee /etc/sysctl.d/40-max-user-watches.conf && sudo sysctl --system
-
-# ------------------------------------------------------------------------
-
-echo -e "\nDisabling Pulse .esd_auth module"
-
-# Pulse audio loads the `esound-protocol` module, which best I can tell is rarely needed.
-# That module creates a file called `.esd_auth` in the home directory which I'd prefer to not be there. So...
-sudo sed -i 's|load-module module-esound-protocol-unix|#load-module module-esound-protocol-unix|g' /etc/pulse/default.pa
 
 # ------------------------------------------------------------------------
 
 echo -e "\nEnabling Login Display Manager"
 
-sudo systemctl enable gdm
+sudo systemctl enable sddm
 
 # ------------------------------------------------------------------------
 

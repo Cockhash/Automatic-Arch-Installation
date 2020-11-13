@@ -14,10 +14,10 @@ PKGS=(
         'mesa'                      # Open source version of OpenGL
         
     # --- Setup Desktop
-        'gnome'                     # DE
-        'gnome-tweaks'              # Gnome Customization tool
-        'gdm'                       # Login Display Manager
-        'seahorse'                  # Gnome Passwords
+        'plasma-meta'               # Desktop Environment
+        'xdg-user-dirs'             # KDE Applications
+        'sddm'                      # Login Display Manager
+        'packagekit-qt5'            # Discover Back-end for standard arch repos
         
     # --- Networking Setup
         'wpa_supplicant'            # Key negotiation for WPA wireless networks
@@ -25,7 +25,6 @@ PKGS=(
         'openvpn'                   # Open VPN support
         'networkmanager-openvpn'    # Open VPN plugin for NM
         'network-manager-applet'    # System tray icon/utility for network connectivity
-        'libsecret'                 # Library for storing passwords
     
     # --- Audio
         'alsa-utils'            # Advanced Linux Sound Architecture (ALSA) Components https://alsa.opensrc.org/
@@ -52,14 +51,13 @@ PKGS=(
             
     # TERMINAL UTILITIES --------------------------------------------------
         'zsh'                   # Zsh-Shell
-        'bash-completion'       # Tab completion for Bash
         'bleachbit'             # File deletion utility
         'cronie'                # cron jobs
         'curl'                  # Remote content retrieval
-        'file-roller'           # Archive utility
+        'wget'                  # Remote content retrieval
         'gtop'                  # System monitoring via terminal
-        'hardinfo'              # Hardware info app
         'htop'                  # Process viewer
+        'hardinfo'              # Hardware info app
         'neofetch'              # Shows system info when you launch terminal
         'ntp'                   # Network Time Protocol to set time via network.
         'numlockx'              # Turns on numlock in X11
@@ -71,11 +69,10 @@ PKGS=(
         'tlp'                   # Advanced laptop power management
         'unrar'                 # RAR compression program
         'unzip'                 # Zip compression program
-        'wget'                  # Remote content retrieval
+        'zip'                   # Zip compression program
         'terminator'            # Terminal emulator
         'vim'                   # Terminal Editor
         'zenity'                # Display graphical dialog boxes via shell scripts
-        'zip'                   # Zip compression program
         
     # DISK UTILITIES ------------------------------------------------------
         'android-tools'         # ADB for Android
@@ -87,7 +84,6 @@ PKGS=(
         'gparted'               # Disk utility
         'gvfs-mtp'              # Read MTP Connected Systems
         'gvfs-smb'              # More File System Stuff
-        'nautilus-share'        # File Sharing in Nautilus
         'ntfs-3g'               # Open source implementation of NTFS file system
         'parted'                # Disk utility
         'samba'                 # Samba File Sharing
@@ -125,16 +121,20 @@ PKGS=(
     # GRAPHICS AND DESIGN -------------------------------------------------
         'gimp'                  # GNU Image Manipulation Program
         
-    # OTHERS --------------------------------------------------------
-    
-        'timeshift'             # Backup programm  
+    # Browser --------------------------------------------------------------
         'firefox'               # Browser
         'chromium'              # Alternative Browser
         'torbrowser-launcher'   # Onion Routing, Tor
+        
+    # COMMUNICATION--------------------------------------------------------
+        'thunderbird'           # Mail Client
+        'element-desktop'       # Matrix Client for Communication
+        
+    # OTHERS --------------------------------------------------------------
+    
+        'timeshift'             # Backup programm  
         'libreoffice'           # Office Suite
         'filezilla'             # SSH File Transfer
-        'element-desktop'       # Matrix Client for Communication
-        'thunderbird'           # Mail Client
 )
 
 for PKG in "${PKGS[@]}"; do

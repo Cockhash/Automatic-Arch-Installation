@@ -18,6 +18,7 @@ PKGS=(
     # UTILITIES -----------------------------------------------------------
     
         'freeoffice'                # Office Alternative
+        'timeshift'                 # Backup programm  
         
     # MEDIA ---------------------------------------------------------------
     

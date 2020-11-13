@@ -217,7 +217,8 @@ echo "--------------------------------------"
 echo "--            Optional              --"
 echo "--------------------------------------"
 
-CHROOT # CHROOT closing/new opening because ./1_software-pacman.sh would not be under chrooted /mnt
+# CHROOT closing/new opening because ./1_software-pacman.sh would not be under chrooted /mnt
+CHROOT
 
 # Install software from official repositorys
 ./1_software-pacman.sh
@@ -225,7 +226,8 @@ CHROOT # CHROOT closing/new opening because ./1_software-pacman.sh would not be 
 # Install software from unofficial AUR repositorys
 ./1_software-aur.sh
 
-arch-chroot /mnt /bin/bash <<"CHROOT" # "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
+# "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
+arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+arch-chroot /mnt /bin/bash <<"CHROOT"
+
 echo "--------------------------------------"
 echo "--   Install additional packages    --"
 echo "--------------------------------------"
@@ -140,3 +142,5 @@ for PKG in "${PKGS[@]}"; do
     echo "INSTALLING: ${PKG}"
     pacman -S ${PKG} --noconfirm --needed
 done
+
+CHROOT

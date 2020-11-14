@@ -155,12 +155,12 @@ echo "--------------------------------------"
 
 mkfs.ext4 /dev/main/lv_root
 mkfs.fat -F32 ${esp_disk}
-mkfs.ext4 ${boot_partition}
+mkfs.ext4 ${boot_disk}
 
 # mount target
 mount /dev/main/lv_root /mnt
 mkdir /mnt/boot
-mount ${boot_partition} /mnt/boot
+mount ${boot_disk} /mnt/boot
 mkdir /mnt/boot/esp
 mount ${esp_disk} /mnt/boot/esp
 

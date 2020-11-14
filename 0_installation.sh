@@ -140,7 +140,7 @@ echo "--------------------------------------"
 echo "--      Creating encrypted LVM      --"
 echo "--------------------------------------"
 
-cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 
+cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 ${lvm_disk}
 cryptsetup luksOpen ${lvm_disk} lvm
 pvcreate /dev/mapper/lvm
 vgcreate main /dev/mapper/lvm

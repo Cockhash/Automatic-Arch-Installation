@@ -54,7 +54,6 @@ if [ "$disk" == "/dev/nvm" ]; then
 	lvm_disk=${disk}"p1"
 	esp_disk=${disk}"p2"
 	boot_disk=${disk}"p3"
-
 else
 	lvm_disk=${disk}"1"
 	esp_disk=${disk}"2"

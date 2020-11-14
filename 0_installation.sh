@@ -132,7 +132,7 @@ sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
 #sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
 
 # set partition types
-sgdisk -t 1:8300 ${disk}
+sgdisk -t 1:8e00 ${disk}
 sgdisk -t 2:ef00 ${disk}
 sgdisk -t 3:8300 ${disk}
 
@@ -184,7 +184,7 @@ echo "--------------------------------------"
 echo "--    Arch Install on Main Drive    --"
 echo "--------------------------------------"
 
-pacstrap -i /mnt base base-devel os-prober efibootmgr grub linux linux-firmware linux-headers vim nano sudo --noconfirm --needed
+pacstrap -i /mnt base base-devel os-prober efibootmgr grub linux linux-firmware linux-headers vim nano sudo lvm2 cryptdevice --noconfirm --needed
 
 echo "--------------------------------------"
 echo "--    Set-up Internet connection    --"
@@ -212,7 +212,6 @@ mount ${esp_disk} /boot/esp
 
 grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
-mkdir /boot/grub/
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"

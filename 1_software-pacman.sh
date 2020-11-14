@@ -7,7 +7,7 @@ echo "--   Install additional packages    --"
 echo "--------------------------------------"
 
 PKGS=(
-    # --- XORG Display Rendering
+    # XORG DISPLAY RENDERING ----------------------------------------------
         'xorg'                      # Base Package
         'xorg-drivers'              # Display Drivers 
         'xorg-server'               # XOrg server
@@ -15,21 +15,21 @@ PKGS=(
         'xorg-xinput'               # Xorg xinput
         'mesa'                      # Open source version of OpenGL
         
-    # --- Setup Desktop
+    # DESKTOP -------------------------------------------------------------
         'plasma-meta'               # Desktop Environment
         'kde-applications-meta'     # KDE Applications
         'xdg-user-dirs'             # Create user directories in Dolphin
         'sddm'                      # Login Display Manager
         'packagekit-qt5'            # Discover Back-end for standard arch repos
         
-    # --- Networking Setup
+    # NETWORKING SETUP ----------------------------------------------------
         'wpa_supplicant'            # Key negotiation for WPA wireless networks
         'dialog'                    # Enables shell scripts to trigger dialog boxex
         'openvpn'                   # Open VPN support
         'networkmanager-openvpn'    # Open VPN plugin for NM
         'network-manager-applet'    # System tray icon/utility for network connectivity
     
-    # --- Audio
+    # AUDIO ---------------------------------------------------------------
         'alsa-utils'            # Advanced Linux Sound Architecture (ALSA) Components https://alsa.opensrc.org/
         'alsa-plugins'          # ALSA plugins
         'pulseaudio'            # Pulse Audio sound components
@@ -37,14 +37,14 @@ PKGS=(
         'pavucontrol'           # Pulse Audio volume control
         'pnmixer'               # System tray volume control
         
-    # --- Bluetooth
+    # BLUETOOTH -----------------------------------------------------------
         'bluez'                 # Daemons for the bluetooth protocol stack
         'bluez-utils'           # Bluetooth development and debugging utilities
         'bluez-firmware'        # Firmwares for Broadcom BCM203x and STLC2300 Bluetooth chips
         'blueberry'             # Bluetooth configuration tool
         'pulseaudio-bluetooth'  # Bluetooth support for PulseAudio
     
-    # --- Printers
+    # PRINTERS ------------------------------------------------------------
         'cups'                  # Open source printer drivers
         'cups-pdf'              # PDF support for cups
         'ghostscript'           # PostScript interpreter
@@ -135,7 +135,6 @@ PKGS=(
         'element-desktop'       # Matrix Client for Communication
         
     # OTHERS --------------------------------------------------------------
-    
         'libreoffice'           # Office Suite
         'filezilla'             # SSH File Transfer
 )
@@ -143,6 +142,18 @@ PKGS=(
 for PKG in "${PKGS[@]}"; do
     echo "INSTALLING: ${PKG}"
     pacman -S ${PKG} --noconfirm --needed
+done
+
+PKGS=(
+    # Remove unnecessary packages, that came as dependencies
+        'kde-education-meta'
+        'kde-games-meta'
+        'kde-multimedia-meta'
+)
+
+for PKG in "${PKGS[@]}"; do
+    echo "REMOVING: ${PKG}"
+    pacman -R ${PKG} --noconfirm --needed
 done
 
 CHROOT

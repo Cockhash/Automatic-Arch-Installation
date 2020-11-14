@@ -171,3 +171,10 @@ echo "--    Set-up Internet connection    --"
 echo "--------------------------------------"
 
 pacstrap -i /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
+
+arch-chroot /mnt /bin/bash <<"CHROOT"
+
+pacman -Sy neofetch
+neofetch
+
+CHROOT

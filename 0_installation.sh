@@ -164,10 +164,4 @@ echo "--------------------------------------"
 echo "--    Arch Install on Main Drive    --"
 echo "--------------------------------------"
 
-pacstrap /mnt base base-devel os-prober efibootmgr grub linux linux-firmware linux-headers vim nano sudo lvm2 cryptdevice --noconfirm --needed
-
-echo "--------------------------------------"
-echo "--    Set-up Internet connection    --"
-echo "--------------------------------------"
-
-pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
+pacstrap -i /mnt base

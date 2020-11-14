@@ -16,16 +16,13 @@ makepkg -srci --noconfirm
 
 PKGS=(
     # UTILITIES -----------------------------------------------------------
-    
         'freeoffice'                # Office Alternative
         'timeshift'                 # Backup programm  
         
     # MEDIA ---------------------------------------------------------------
-    
         'rambox-bin'                # Social Media Client-Set
         
-    # ZSH Utilities ------------------------------------------------------
-    
+    # ZSH UTILITIES -------------------------------------------------------
         'zsh-autosuggestions'
         'zsh-syntax-highlighting'
         'autojump'

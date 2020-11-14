@@ -126,7 +126,6 @@ sgdisk -n 1:0:+15G ${disk}   # partition 1 (lvm), default start, remaining
 sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
 sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
 
-
 #sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
 #sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
 #sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
@@ -144,8 +143,6 @@ sgdisk -c 3:"boot" ${disk}
 echo "--------------------------------------"
 echo "--      Creating encrypted LVM      --"
 echo "--------------------------------------"
-echo ${lvm_disk}
-sleep 5
 
 cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 ${lvm_disk}
 cryptsetup luksOpen ${lvm_disk} lvm
@@ -159,16 +156,12 @@ vgchange -ay
 echo "--------------------------------------"
 echo "--       Creating Filesystems       --"
 echo "--------------------------------------"
-echo ${esp_disk}
-sleep5
 
 mkfs.ext4 /dev/main/lv_root
 mkfs.fat -F32 ${esp_disk}
 mkfs.ext4 ${boot_disk}
 
 # mount target
-echo ${boot_disk}
-sleep 3
 mount /dev/main/lv_root /mnt
 mkdir /mnt/boot
 mount ${boot_disk} /mnt/boot
@@ -193,8 +186,6 @@ pacstrap -i /mnt net-tools networkmanager network-manager-applet netctl wireless
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
 
-pacman -Sy
-
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"
@@ -202,13 +193,9 @@ echo "--------------------------------------"
 # Disable grub delay
 #sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 #sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
-echo ${lvm_disk}
-sleep 3
 
-sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
+sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda1:main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
 sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
-
-mount ${esp_disk} /boot/esp
 
 grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
@@ -218,7 +205,8 @@ echo "--------------------------------------"
 echo "--        Update mkinitcpio         --"
 echo "--------------------------------------"
 
-sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
+nano /etc/mkinitcpio.conf
+#sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
 
@@ -273,10 +261,10 @@ echo "--------------------------------------"
 CHROOT
 
 # Install software from official repositorys
-#./1_software-pacman.sh
+./1_software-pacman.sh
 
 # Install software from unofficial AUR repositorys
-#./2_software-aur.sh
+./2_software-aur.sh
 
 # "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
 arch-chroot /mnt /bin/bash <<"CHROOT" 

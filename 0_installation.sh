@@ -251,7 +251,7 @@ CHROOT
 ./1_software-pacman.sh
 
 # Install software from unofficial AUR repositorys
-./1_software-aur.sh
+./2_software-aur.sh
 
 # "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
 arch-chroot /mnt /bin/bash <<"CHROOT" 

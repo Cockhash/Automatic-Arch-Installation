@@ -195,6 +195,7 @@ sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/
 
 grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
+mkdir /boot/grub/
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"

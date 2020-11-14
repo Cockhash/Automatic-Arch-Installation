@@ -105,14 +105,14 @@ export user
 export user_password
 export shutdown
 
-echo "------------------------------------------------------"
-echo "Setting up mirrors for optimal download - Germany Only"
-echo "------------------------------------------------------"
-
-cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
-pacman -Syy
-
+#echo "------------------------------------------------------"
+#echo "Setting up mirrors for optimal download - Germany Only"
+#echo "------------------------------------------------------"
+#
+#cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+#curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
+#pacman -Syy
+#
 echo "--------------------------------------"
 echo "--         Formatting disk          --"
 echo "--------------------------------------"

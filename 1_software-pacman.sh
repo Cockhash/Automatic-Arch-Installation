@@ -17,7 +17,8 @@ PKGS=(
         
     # --- Setup Desktop
         'plasma-meta'               # Desktop Environment
-        'xdg-user-dirs'             # KDE Applications
+        'kde-applications-meta'     # KDE Applications
+        'xdg-user-dirs'             # Create user directories in Dolphin
         'sddm'                      # Login Display Manager
         'packagekit-qt5'            # Discover Back-end for standard arch repos
         

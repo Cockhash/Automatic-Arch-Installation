@@ -199,6 +199,14 @@ mkdir /boot/grub/
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"
+echo "--        Update mkinitcpio         --"
+echo "--------------------------------------"
+
+sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)
+/g' /etc/default/grub
+mkinitcpio -p linux
+
+echo "--------------------------------------"
 echo "--    Configure system properly     --"
 echo "--------------------------------------"
 

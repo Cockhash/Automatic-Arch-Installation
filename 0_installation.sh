@@ -167,12 +167,10 @@ mkdir /mnt/boot
 mount ${boot_disk} /mnt/boot
 mkdir /mnt/boot/esp
 mount ${esp_disk} /mnt/boot/esp
-sleep 5
 
 mkdir /mnt/etc
 genfstab -Up /mnt >> /mnt/etc/fstab
-cat  cat /mnt/etc/fstab
-sleep 5
+
 echo "--------------------------------------"
 echo "--    Arch Install on Main Drive    --"
 echo "--------------------------------------"
@@ -258,16 +256,16 @@ echo "--            Optional              --"
 echo "--------------------------------------"
 
 # CHROOT closing/new opening because ./1_software-pacman.sh would not be under chrooted /mnt
-CHROOT
+#CHROOT
 
 # Install software from official repositorys
-./1_software-pacman.sh
+#./1_software-pacman.sh
 
 # Install software from unofficial AUR repositorys
-./2_software-aur.sh
+#./2_software-aur.sh
 
 # "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
-arch-chroot /mnt /bin/bash <<"CHROOT" 
+#arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers

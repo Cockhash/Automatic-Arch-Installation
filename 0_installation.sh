@@ -202,8 +202,8 @@ echo "--------------------------------------"
 echo "--        Update mkinitcpio         --"
 echo "--------------------------------------"
 
-sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)
-/g' /etc/default/grub
+sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
+
 mkinitcpio -p linux
 
 echo "--------------------------------------"

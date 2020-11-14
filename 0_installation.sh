@@ -51,11 +51,14 @@ echo -e "\nPlease enter your drive: /dev/sda, /dev/sdb, /dev/nvme0n1, /dev/nvme0
 read disk
 
 if [ "$disk" == "/dev/nvm" ]; then
-	root_disk=${disk}"p1"
-	boot_disk=${disk}"p2"
+	lvm_disk=${disk}"p1"
+	esp_disk=${disk}"p2"
+	boot_disk=${disk}"p3"
+
 else
-	root_disk=${disk}"1"
-	boot_disk=${disk}"2"
+	lvm_disk=${disk}"1"
+	esp_disk=${disk}"2"
+	boot_disk=${disk}"3"
 fi
 
 echo -e "\nPlease enter hostname:"
@@ -93,7 +96,8 @@ read shutdown
 
 # export environment variabels
 export disk
-export root_disk
+export lvm_disk
+export esp_disk
 export boot_disk
 export hostname
 export root_password
@@ -118,29 +122,47 @@ sgdisk -Z ${disk} # zap all on disk
 sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 2:0:+1024M ${disk} # partition 1 (esp), default start block, 1024MB
-sgdisk -n 1:0:0 ${disk} # partition 2 (Root), default start, remaining
+sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
 
 # set partition types
 sgdisk -t 1:8300 ${disk}
 sgdisk -t 2:ef00 ${disk}
+sgdisk -t 3:8300 ${disk}
 
 # label partitions
-sgdisk -c 1:"root" ${disk}
+sgdisk -c 1:"lvm" ${disk}
 sgdisk -c 2:"esp" ${disk}
+sgdisk -c 3:"boot" ${disk}
 
+echo "--------------------------------------"
+echo "--      Creating encrypted LVM      --"
+echo "--------------------------------------"
+
+cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 
+cryptsetup luksOpen ${lvm_disk} lvm
+pvcreate /dev/mapper/lvm
+vgcreate main /dev/mapper/lvm
+lvcreate -l 100%FREE -n lv_root main
+modprobe dm-crypt
+vgscan
+vgchange -ay
 
 echo "--------------------------------------"
 echo "--       Creating Filesystems       --"
 echo "--------------------------------------"
 
-mkfs.ext4 ${root_disk}
-mkfs.fat -F32 ${boot_disk}
+mkfs.ext4 /dev/main/lv_root
+mkfs.fat -F32 ${esp_disk}
+mkfs.ext4 ${boot_partition}
 
 # mount target
-mount ${root_disk} /mnt
-mkdir -p /mnt/boot/efi
-mount ${boot_disk} /mnt/boot/efi
+mount /dev/main/lv_root /mnt
+mkdir /mnt/boot
+mount ${boot_partition} /mnt/boot
+mkdir /mnt/boot/esp
+mount ${esp_disk} /mnt/boot/esp
 
 mkdir /mnt/etc
 genfstab -Up /mnt >> /mnt/etc/fstab
@@ -166,7 +188,10 @@ echo "--------------------------------------"
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
 
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub_uefi --recheck --debug
+sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/${lvm_disk}:main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
+sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
+
+grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
 grub-mkconfig -o /boot/grub/grub.cfg
 

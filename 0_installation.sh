@@ -105,14 +105,6 @@ export user
 export user_password
 export shutdown
 
-#echo "------------------------------------------------------"
-#echo "Setting up mirrors for optimal download - Germany Only"
-#echo "------------------------------------------------------"
-#
-#cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-#curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
-pacman -Sy
-#
 echo "--------------------------------------"
 echo "--         Formatting disk          --"
 echo "--------------------------------------"
@@ -125,10 +117,6 @@ sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 sgdisk -n 1:0:+15G ${disk}   # partition 1 (lvm), default start, remaining
 sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
 sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
-
-#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
-#sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
-#sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
 
 # set partition types
 sgdisk -t 1:8e00 ${disk}
@@ -146,9 +134,11 @@ echo "--------------------------------------"
 
 cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 ${lvm_disk}
 cryptsetup luksOpen ${lvm_disk} lvm
+
 pvcreate /dev/mapper/lvm
 vgcreate main /dev/mapper/lvm
 lvcreate -l 100%FREE -n lv_root main
+
 modprobe dm-crypt
 vgscan
 vgchange -ay
@@ -188,10 +178,6 @@ echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"
 
-# Disable grub delay
-#sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-#sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
-
 sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda1:main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
 sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
 
@@ -204,7 +190,6 @@ echo "--        Update mkinitcpio         --"
 echo "--------------------------------------"
 
 nano /etc/mkinitcpio.conf
-#sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
 
 mkinitcpio -p linux
 
@@ -254,18 +239,6 @@ echo "-------------------------------------------------"
 echo "--------------------------------------"
 echo "--            Optional              --"
 echo "--------------------------------------"
-
-# CHROOT closing/new opening because ./1_software-pacman.sh would not be under chrooted /mnt
-#CHROOT
-
-# Install software from official repositorys
-#./1_software-pacman.sh
-
-# Install software from unofficial AUR repositorys
-#./2_software-aur.sh
-
-# "CHROOT" closing/re-opening because ./1_software-pacman.sh would not be under chrooted /mnt
-#arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers

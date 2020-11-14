@@ -180,6 +180,9 @@ pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_to
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
 
+./1_software-pacman.sh
+./2_software-aur.sh
+
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"

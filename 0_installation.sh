@@ -164,7 +164,7 @@ echo "--------------------------------------"
 echo "--    Arch Install on Main Drive    --"
 echo "--------------------------------------"
 
-pacstrap -i /mnt base base-devel os-prober efibootmgr grub linux linux-firmware linux-headers vim nano sudo lvm2 cryptdevice --noconfirm --needed
+pacstrap -i /mnt base --noconfirm --needed
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
 

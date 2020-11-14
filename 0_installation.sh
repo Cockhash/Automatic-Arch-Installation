@@ -111,7 +111,7 @@ export shutdown
 #
 #cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 #curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
-#pacman -Syy
+pacman -Sy
 #
 echo "--------------------------------------"
 echo "--         Formatting disk          --"
@@ -179,6 +179,8 @@ echo "--------------------------------------"
 pacstrap -i /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
+
+pacman -Sy
 
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"

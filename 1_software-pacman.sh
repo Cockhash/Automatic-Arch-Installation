@@ -114,6 +114,7 @@ PKGS=(
         'python'                # Scripting language
         'yarn'                  # Dependency management (Hyper needs this)
         'atom'                  # Code Editor
+        'code'                  # Code Editor; open-source VSCode
         'go'                    # Import programming language
         
     # MEDIA ---------------------------------------------------------------

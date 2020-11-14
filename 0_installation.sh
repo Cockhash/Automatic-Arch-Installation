@@ -178,10 +178,10 @@ echo "--------------------------------------"
 
 pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
-arch-chroot /mnt /bin/bash <<"CHROOT"
-
 ./1_software-pacman.sh
 ./2_software-aur.sh
+
+arch-chroot /mnt /bin/bash <<"CHROOT"
 
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"

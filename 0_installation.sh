@@ -187,7 +187,7 @@ echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"
 
-sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/sda1:main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
+sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=/dev/'"${lvm_disk}"':main:allow-discards loglevel=3 quiet"/g' /etc/default/grub
 sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
 
 grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug

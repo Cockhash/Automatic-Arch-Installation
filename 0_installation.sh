@@ -47,7 +47,7 @@ echo "--------------------------------------"
 
 lsblk
 
-echo -e "\nPlease enter your drive: /dev/sda, /dev/sdb, /dev/nvme0n1, /dev/nvme0n2 ..."
+echo -e "\nPlease enter your drive: /dev/sda or /dev/nvme0n1"
 read disk
 
 if [ "$disk" == "/dev/nvm" ]; then

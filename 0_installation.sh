@@ -172,14 +172,8 @@ echo "--------------------------------------"
 
 pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
-echo "--------------------------------------"
-echo "--    Set-up Internet connection    --"
-echo "--------------------------------------"
-
-pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
-
 ./1_software-pacman.sh
-./2_software-aur.sh
+#./2_software-aur.sh # can only be done as non-root user; makepkg is nor runable as root
 
 arch-chroot /mnt /bin/bash <<"CHROOT"
 
@@ -198,8 +192,8 @@ echo "--------------------------------------"
 echo "--        Update mkinitcpio         --"
 echo "--------------------------------------"
 
-nano /etc/mkinitcpio.conf
-
+sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
+HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)
 mkinitcpio -p linux
 
 echo "--------------------------------------"

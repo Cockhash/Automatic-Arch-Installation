@@ -90,9 +90,6 @@ if [ "$user_password" != "$user_password2" ]; then
 exit 1
 fi
 
-echo -e "\nShutdown after the installation is finished: yes/no"
-read shutdown
-
 # export environment variabels
 export disk
 export lvm_disk
@@ -102,7 +99,6 @@ export hostname
 export root_password
 export user
 export user_password
-export shutdown
 
 # update repos
 pacman -Sy

@@ -104,6 +104,9 @@ export user
 export user_password
 export shutdown
 
+# update repos
+pacman -Sy
+
 echo "--------------------------------------"
 echo "--         Formatting disk          --"
 echo "--------------------------------------"
@@ -113,9 +116,13 @@ sgdisk -Z ${disk} # zap all on disk
 sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
-sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+#sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
+#sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+
 sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
 
 # set partition types
 sgdisk -t 1:8e00 ${disk}
@@ -181,14 +188,14 @@ echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"
 
+# Disable grub delay
+#sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
+#sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
+
 sed -i -e "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet\"/g" /etc/default/grub
-
 sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
-
 grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
-
 cp /usr/share/locale/en\@quot/LC_MESSAGES/grub.mo /boot/grub/locale/en.mo
-
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo "--------------------------------------"
@@ -196,7 +203,6 @@ echo "--        Update mkinitcpio         --"
 echo "--------------------------------------"
 
 sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
-HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)
 mkinitcpio -p linux
 
 echo "--------------------------------------"

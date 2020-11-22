@@ -180,10 +180,6 @@ arch-chroot /mnt /bin/bash <<"CHROOT"
 
 ./1_software-pacman.sh
 
-CHROOT
-
-arch-chroot /mnt /bin/bash <<"CHROOT"
-
 echo "--------------------------------------"
 echo "-- Install and configure bootloader --"
 echo "--------------------------------------"

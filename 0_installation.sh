@@ -54,7 +54,33 @@ if [ "$disk" == "/dev/nvme0n1" ]; then
 	boot_disk=${disk}"p1"
 	esp_disk=${disk}"p2"
 	lvm_disk=${disk}"p3"
-else
+fi
+
+if [ "$disk" == "/dev/nvme0n2" ]; then
+	boot_disk=${disk}"p1"
+	esp_disk=${disk}"p2"
+	lvm_disk=${disk}"p3"
+fi
+
+if [ "$disk" == "/dev/nvme0n3" ]; then
+	boot_disk=${disk}"p1"
+	esp_disk=${disk}"p2"
+	lvm_disk=${disk}"p3"
+fi
+
+if [ "$disk" == "/dev/sda" ]; then
+	boot_disk=${disk}"1"
+	esp_disk=${disk}"2"
+	lvm_disk=${disk}"3"
+fi
+
+if [ "$disk" == "/dev/sdb" ]; then
+	boot_disk=${disk}"1"
+	esp_disk=${disk}"2"
+	lvm_disk=${disk}"3"
+fi
+
+if [ "$disk" == "/dev/sdc" ]; then
 	boot_disk=${disk}"1"
 	esp_disk=${disk}"2"
 	lvm_disk=${disk}"3"

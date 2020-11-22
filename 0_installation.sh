@@ -112,13 +112,13 @@ sgdisk -Z ${disk} # zap all on disk
 sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 
 # create partitions
-#sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
-#sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
-#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
-
-sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
 sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
-sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
+sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+
+#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+#sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+#sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
 
 # set partition types
 sgdisk -t 1:8e00 ${disk}

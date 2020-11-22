@@ -50,7 +50,7 @@ lsblk
 echo -e "\nPlease enter your drive: /dev/sda or /dev/nvme0n1"
 read disk
 
-if [ "$disk" == "/dev/nvm" ]; then
+if [ "$disk" == "/dev/nvme0n1" ]; then
 	boot_disk=${disk}"p1"
 	esp_disk=${disk}"p2"
 	lvm_disk=${disk}"p3"

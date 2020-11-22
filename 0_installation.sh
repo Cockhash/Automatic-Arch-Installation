@@ -331,10 +331,10 @@ echo "--                    Done                     --"
 echo "-------------------------------------------------"
 
 echo -e "\nFollow these steps:"
-echo -e "\narch-chroot /mnt"
-echo -e "change the line to GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet\"/g" /etc/default/grub
-echo -e "\nnano /etc/default/grub"
-echo -e "\ngrub-mkconfig -o /boot/grub/grub.cfg"
+echo -e "arch-chroot /mnt"
+echo -e "change the line to GRUB_CMDLINE_LINUX_DEFAULT="cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet" /etc/default/grub"
+echo -e "nano /etc/default/grub"
+echo -e "grub-mkconfig -o /boot/grub/grub.cfg"
 
 CHROOT
 

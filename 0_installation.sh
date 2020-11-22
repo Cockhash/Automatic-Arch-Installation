@@ -51,13 +51,13 @@ echo -e "\nPlease enter your drive: /dev/sda or /dev/nvme0n1"
 read disk
 
 if [ "$disk" == "/dev/nvm" ]; then
-	lvm_disk=${disk}"p1"
+	boot_disk=${disk}"p1"
 	esp_disk=${disk}"p2"
-	boot_disk=${disk}"p3"
+	lvm_disk=${disk}"p3"
 else
-	lvm_disk=${disk}"1"
+	boot_disk=${disk}"1"
 	esp_disk=${disk}"2"
-	boot_disk=${disk}"3"
+	lvm_disk=${disk}"3"
 fi
 
 echo -e "\nPlease enter hostname:"
@@ -112,23 +112,23 @@ sgdisk -Z ${disk} # zap all on disk
 sgdisk -a 2048 -o ${disk} # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
-sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
-sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
-
-#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+#sgdisk -n 1:0:+35G ${disk}   # partition 1 (lvm), default start, remaining
 #sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
-#sgdisk -n 1:0:0 ${disk}      # partition 1 (lvm), default start, remaining
+#sgdisk -n 3:0:+1024M ${disk} # partition 3 (boot), default start block, 1024MB
+
+sgdisk -n 1:0:+1024M ${disk} # partition 1 (boot), default start block, 1024MB
+sgdisk -n 2:0:+1024M ${disk} # partition 2 (esp), default start block, 1024MB
+sgdisk -n 3:0:0 ${disk}      # partition 3 (lvm), default start, remaining
 
 # set partition types
-sgdisk -t 1:8e00 ${disk}
+sgdisk -t 1:8300 ${disk}
 sgdisk -t 2:ef00 ${disk}
-sgdisk -t 3:8300 ${disk}
+sgdisk -t 3:8e00 ${disk}
 
 # label partitions
-sgdisk -c 1:"lvm" ${disk}
+sgdisk -c 1:"boot" ${disk}
 sgdisk -c 2:"esp" ${disk}
-sgdisk -c 3:"boot" ${disk}
+sgdisk -c 3:"lvm" ${disk}
 
 echo "--------------------------------------"
 echo "--      Creating encrypted LVM      --"
@@ -174,7 +174,6 @@ echo "--    Set-up Internet connection    --"
 echo "--------------------------------------"
 
 pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
-
 
 arch-chroot /mnt /bin/bash <<"CHROOT" 
 
@@ -304,12 +303,12 @@ echo "-------------------------------------------------"
 echo "--                    Done                     --"
 echo "-------------------------------------------------"
 
-CHROOT
-
 echo -e "\nFollow these steps:"
 echo -e "\narch-chroot /mnt"
 echo -e "change the line to GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet\"/g" /etc/default/grub
 echo -e "\nnano /etc/default/grub"
 echo -e "\ngrub-mkconfig -o /boot/grub/grub.cfg"
+
+CHROOT
 
 exit

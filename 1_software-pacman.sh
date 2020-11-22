@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-arch-chroot /mnt /bin/bash <<"CHROOT"
-
 echo "--------------------------------------"
 echo "--   Install additional packages    --"
 echo "--------------------------------------"
@@ -155,5 +153,3 @@ for PKG in "${PKGS[@]}"; do
     echo "REMOVING: ${PKG}"
     pacman -R ${PKG} --noconfirm --needed
 done
-
-CHROOT

@@ -22,6 +22,9 @@ PKGS=(
     # MEDIA ---------------------------------------------------------------
         'rambox-bin'                # Social Media Client-Set
         
+    # FONTS
+        'ttf-ms-fonts'
+        
     # ZSH UTILITIES -------------------------------------------------------
         'zsh-autosuggestions'
         'zsh-syntax-highlighting'

@@ -316,6 +316,7 @@ sudo systemctl enable bluetooth
 echo -e "\nEnabling the cups service daemon so we can print"
 
 systemctl enable org.cups.cupsd.service
+sudo systemctl enable cups
 sudo systemctl disable dhcpcd.service
 sudo systemctl enable NetworkManager
 

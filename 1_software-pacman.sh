@@ -76,6 +76,7 @@ PKGS=(
         'terminator'            # Terminal emulator
         'vim'                   # Terminal Editor
         'zenity'                # Display graphical dialog boxes via shell scripts
+        'reflector'             # Tool for fetching latest mirrors
         
     # DISK UTILITIES ------------------------------------------------------
         'android-tools'         # ADB for Android

@@ -16,7 +16,6 @@ makepkg -srci --noconfirm
 
 PKGS=(
     # UTILITIES -----------------------------------------------------------
-        'freeoffice'                # Office Alternative
         'timeshift'                 # Backup programm  
         
     # MEDIA ---------------------------------------------------------------
@@ -32,7 +31,7 @@ PKGS=(
 )
 
 for PKG in "${PKGS[@]}"; do
-yay -Sy --noconfirm $PKG
+yay -Syu --noconfirm $PKG
 done
 
 CHROOT

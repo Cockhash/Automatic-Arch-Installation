@@ -100,6 +100,7 @@ PKGS=(
         'remmina'               # Remote Connection
         'veracrypt'             # Disc encryption utility
         'keepassxc'             # Password Manager
+        'thunderbird'           # E-Mail Client
         
     # DEVELOPMENT ---------------------------------------------------------
         'clang'                 # C Lang compiler

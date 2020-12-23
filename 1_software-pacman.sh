@@ -10,8 +10,8 @@ PKGS=(
     # XORG DISPLAY RENDERING ----------------------------------------------
         'xorg'                      # Base Package
         'xorg-drivers'              # Display Drivers 
-        'xorg-server'               # XOrg server
-        'xorg-xinit'                # XOrg init
+        'xorg-server'               # Xorg server
+        'xorg-xinit'                # Xorg init
         'xorg-xinput'               # Xorg xinput
         'mesa'                      # Open source version of OpenGL
         

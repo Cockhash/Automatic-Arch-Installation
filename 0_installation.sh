@@ -203,6 +203,7 @@ pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_to
 
 # install additional software
 ./1_software-pacman.sh
+./2_software-aur.sh
 
 arch-chroot /mnt /bin/bash <<"CHROOT" 
 

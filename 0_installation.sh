@@ -201,10 +201,6 @@ echo "--------------------------------------"
 
 pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
-# install additional software
-./1_software-pacman.sh
-./2_software-aur.sh
-
 arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 echo "--------------------------------------"
@@ -283,6 +279,10 @@ su $user
 echo "--------------------------------------"
 echo "--  FINAL SETUP AND CONFIGURATION   --"
 echo "--------------------------------------"
+
+# install additional software
+./1_software-pacman.sh
+./2_software-aur.sh
 
 # ------------------------------------------------------------------------
 

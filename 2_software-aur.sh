@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-arch-chroot /mnt /bin/bash <<"CHROOT"
-
 echo "--------------------------------------"
 echo "--      Install AUR packages        --"
 echo "--------------------------------------"
@@ -12,7 +10,7 @@ cd /tmp
 echo "CLOING: YAY"
 git clone "https://aur.archlinux.org/yay.git"
 cd yay
-makepkg -srci --noconfirm
+makepkg -srci --noconfirm && cd
 
 PKGS=(
     # UTILITIES -----------------------------------------------------------
@@ -31,7 +29,7 @@ PKGS=(
 )
 
 for PKG in "${PKGS[@]}"; do
-yay -Syu --noconfirm $PKG
+sudo yay -Syu --noconfirm $PKG
 done
 
-CHROOT
+exit

@@ -5,8 +5,8 @@ A single script for a full Arch Installation
 
 ### With git
 
-- Update mirrorlist and install git: pacman -Sy git
-- Get the script: git clone https://github.com/cockhash/automatic-arch-installation
+- Update mirrorlist and install git: `pacman -Sy git`
+- Get the script: `git clone https://github.com/cockhash/automatic-arch-installation`
 
 ### Without git
 

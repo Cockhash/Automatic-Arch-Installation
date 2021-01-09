@@ -92,6 +92,7 @@ PKGS=(
         'smartmontools'         # Disk Monitoring
         'smbclient'             # SMB Connection 
         'xfsprogs'              # XFS Support
+        'filezilla'             # SSH File Transfer
         
     # GENERAL UTILITIES ---------------------------------------------------
         'freerdp'               # RDP Connections
@@ -124,7 +125,7 @@ PKGS=(
     # GRAPHICS AND DESIGN -------------------------------------------------
         'gimp'                  # GNU Image Manipulation Program
         
-    # Browser --------------------------------------------------------------
+    # BROWSER --------------------------------------------------------------
         'firefox'               # Browser
         'chromium'              # Alternative Browser
         'torbrowser-launcher'   # Onion Routing, Tor
@@ -133,9 +134,9 @@ PKGS=(
         'thunderbird'           # Mail Client
         'element-desktop'       # Matrix Client for Communication
         
-    # OTHERS --------------------------------------------------------------
+    # OFFICE --------------------------------------------------------------
         'libreoffice'           # Office Suite
-        'filezilla'             # SSH File Transfer
+
 )
 
 for PKG in "${PKGS[@]}"; do

@@ -10,7 +10,7 @@ A single script for a full Arch Installation
 
 ### Without git
 
-- Get the script: wget https://github.com/cockhash/automatic-arch-installation
+- Get the script: `wget https://github.com/cockhash/automatic-arch-installation`
 ______________________________________________________________________________
 
 ## How to use

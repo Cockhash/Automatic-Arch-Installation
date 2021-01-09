@@ -1,17 +1,6 @@
 # Automatic-Arch-Installation
 A single script for a full Arch Installation 
 
-## Note
-
-- You can first try it in a VirtualMachine
-______________________________________________________________________________
-
-## Prerequisites
-
-- A working internet connection
-- Logged in as 'root'
-______________________________________________________________________________
-
 ## Obtaining The Repository
 
 ### With git

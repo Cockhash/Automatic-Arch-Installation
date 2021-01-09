@@ -20,7 +20,7 @@ cd automatic-arch-installation
 
 make it executable:
 ```
-chmod +x setup.sh
+chmod -R a+x $(pwd)
 ```
 
 then start the script:

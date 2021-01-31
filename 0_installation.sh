@@ -38,6 +38,17 @@ else
     exit 1
 fi
 
+# check ethernet connection
+ping -c3 archlinux.org
+
+if [ $? -eq 0 ]; then
+    echo "Internet connection detected. Installation will go on."
+else
+    echo ="Internet connection failed"
+    echo ="ABORTING"
+    exit 1
+fi
+
 # sync systemclock
 timedatectl set-ntp true
 

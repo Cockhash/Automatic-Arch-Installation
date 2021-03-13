@@ -212,12 +212,6 @@ echo "--------------------------------------"
 
 pacstrap /mnt net-tools networkmanager network-manager-applet netctl wireless_tools wpa_supplicant dialog --noconfirm --needed
 
-# Install software from official repositorys
-./1_software-pacman.sh
-
-# Install software from unofficial AUR repositorys
-./1_software-aur.sh
-
 arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 echo "--------------------------------------"
@@ -291,6 +285,24 @@ echo "--------------------------------------"
 
 # Add sudo no password rights
 sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+
+# CHROOT closing/new opening because ./1_software-pacman.sh and ./2_software-aur.sh would not be chrooted under /mnt
+CHROOT
+
+arch-chroot /mnt /bin/bash <<"CHROOT" 
+
+su $user
+
+# Install software from official repositorys
+./1_software-pacman.sh
+
+# Install software from unofficial AUR repositorys
+./2_software-aur.sh
+
+# "CHROOT" closing/re-opening because ./1_software-pacman.sh and ./2_software-aur.sh would not be chrooted under /mnt
+CHROOT
+
+arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 su $user
 

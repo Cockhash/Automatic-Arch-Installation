@@ -220,7 +220,6 @@ echo "--------------------------------------"
 
 # Disable grub delay
 #sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-#sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
 
 
 #sed -i -e "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${lvm_disk}:main:allow-discards loglevel=3 quiet\"/g" /etc/default/grub

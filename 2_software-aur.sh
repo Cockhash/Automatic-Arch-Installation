@@ -6,6 +6,8 @@ echo "--------------------------------------"
 echo "--      Install AUR packages        --"
 echo "--------------------------------------"
 
+su $user
+
 # Install paru (AUR Helper)
 
 cd /tmp

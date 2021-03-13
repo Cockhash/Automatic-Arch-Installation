@@ -6,12 +6,12 @@ echo "--------------------------------------"
 echo "--      Install AUR packages        --"
 echo "--------------------------------------"
 
-# Install yay (AUR Helper)
+# Install paru (AUR Helper)
 
 cd /tmp
-echo "CLOING: YAY"
-git clone "https://aur.archlinux.org/yay.git"
-cd yay
+echo "CLOING: Paru"
+git clone "https://aur.archlinux.org/paru.git"
+cd paru
 makepkg -srci --noconfirm && cd
 
 PKGS=(
@@ -31,7 +31,7 @@ PKGS=(
 )
 
 for PKG in "${PKGS[@]}"; do
-sudo yay -Syu --noconfirm $PKG
+sudo paru -Syu --noconfirm $PKG
 done
 
 CHROOT

@@ -289,10 +289,6 @@ sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /et
 # CHROOT closing/new opening because ./1_software-pacman.sh and ./2_software-aur.sh would not be chrooted under /mnt
 CHROOT
 
-arch-chroot /mnt /bin/bash <<"CHROOT" 
-
-su $user
-
 # Install software from official repositorys
 ./1_software-pacman.sh
 
@@ -300,8 +296,6 @@ su $user
 ./2_software-aur.sh
 
 # "CHROOT" closing/re-opening because ./1_software-pacman.sh and ./2_software-aur.sh would not be chrooted under /mnt
-CHROOT
-
 arch-chroot /mnt /bin/bash <<"CHROOT" 
 
 su $user

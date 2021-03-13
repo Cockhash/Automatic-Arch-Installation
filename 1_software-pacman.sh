@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+arch-chroot /mnt /bin/bash <<"CHROOT"
+
 echo "--------------------------------------"
 echo "--   Install additional packages    --"
 echo "--------------------------------------"
@@ -156,4 +158,4 @@ for PKG in "${PKGS[@]}"; do
     sudo pacman -R ${PKG} --noconfirm --needed
 done
 
-exit
+CHROOT

@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+arch-chroot /mnt /bin/bash <<"CHROOT"
+
 echo "--------------------------------------"
 echo "--      Install AUR packages        --"
 echo "--------------------------------------"
@@ -32,4 +34,4 @@ for PKG in "${PKGS[@]}"; do
 sudo yay -Syu --noconfirm $PKG
 done
 
-exit
+CHROOT

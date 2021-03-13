@@ -6,6 +6,8 @@ echo "--------------------------------------"
 echo "--   Install additional packages    --"
 echo "--------------------------------------"
 
+su $user
+
 PKGS=(
     # XORG DISPLAY RENDERING ----------------------------------------------
         'xorg'                      # Base Package

@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 #-------------------------------------------------------------------------
 #   Author: uououo 
@@ -40,42 +40,42 @@ function preinstall {
     echo -e "\nEnter your drive: /dev/sda or /dev/nvme0n1"
     read disk
 
-    if [ "$disk" == "/dev/nvme0n1" ]; then
+    if [ "${disk}" == "/dev/nvme0n1" ]; then
         disk_boot="${disk}p1"
         disk_esp="${disk}p2"
         disk_lvm="${disk}p3"
         disk_lvm_sed="\/dev\/nvme0n1p3"
     fi
 
-    if [ "$disk" == "/dev/nvme0n2" ]; then
+    if [ "${disk}" == "/dev/nvme0n2" ]; then
         disk_boot="${disk}p1"
         disk_esp="${disk}p2"
         disk_lvm="${disk}p3"
         disk_lvm_sed="\/dev\/nvme0n2p3"
     fi
 
-    if [ "$disk" == "/dev/nvme0n3" ]; then
+    if [ "${disk}" == "/dev/nvme0n3" ]; then
         disk_boot="${disk}p1"
         disk_esp="${disk}p2"
         disk_lvm="${disk}p3"
         disk_lvm_sed="\/dev\/nvme0n3p3"
     fi
 
-    if [ "$disk" == "/dev/sda" ]; then
+    if [ "${disk}" == "/dev/sda" ]; then
         disk_boot="${disk}1"
         disk_esp="${disk}2"
         disk_lvm="${disk}3"
         disk_lvm_sed="\/dev\/sda3"
     fi
 
-    if [ "$disk" == "/dev/sdb" ]; then
+    if [ "${disk}" == "/dev/sdb" ]; then
         disk_boot="${disk}1"
         disk_esp="${disk}2"
         disk_lvm="${disk}3"
         disk_lvm_sed="\/dev\/sdb3"
     fi
 
-    if [ "$disk" == "/dev/sdc" ]; then
+    if [ "${disk}" == "/dev/sdc" ]; then
         disk_boot="${disk}1"
         disk_esp="${disk}2"
         disk_lvm="${disk}3"
@@ -92,7 +92,7 @@ function preinstall {
     read -s root_password2
 
     # Check if both passwords match
-    if [ "$root_password" != "$root_password2" ]; then
+    if [ "${root_password}" != "${root_password2}" ]; then
         echo "Passwords do not match!"
         exit
     fi
@@ -107,7 +107,7 @@ function preinstall {
     read -s user_password2
 
     # Check if both passwords match
-    if [ "$user_password" != "$user_password2" ]; then
+    if [ "${user_password}" != "${user_password2}" ]; then
         echo "Passwords do not match!"
         exit
     fi
@@ -144,26 +144,26 @@ function baseInstall {
     # Format disk
 
     # Disk prep
-    sgdisk -Z $disk             # zap all on disk
-    sgdisk -a 2048 -o $disk     # new gpt disk 2048 alignment
+    sgdisk -Z ${disk}             # zap all on disk
+    sgdisk -a 2048 -o ${disk}     # new gpt disk 2048 alignment
 
     # Create partition layout
-    sgdisk -n 1:0:+1024M $disk  # partition 1 (boot), default start block, size: 1024MB
-    sgdisk -n 2:0:+1024M $disk  # partition 2 (esp), default start block, size: 1024MB
-    sgdisk -n 3:0:0 $disk       # partition 3 (lvm), default start, size: remaining space
+    sgdisk -n 1:0:+1024M ${disk}  # partition 1 (boot), default start block, size: 1024MB
+    sgdisk -n 2:0:+1024M ${disk}  # partition 2 (esp), default start block, size: 1024MB
+    sgdisk -n 3:0:0 ${disk}       # partition 3 (lvm), default start, size: remaining space
 
     # Set partition types
-    sgdisk -t 1:8300 $disk
-    sgdisk -t 2:ef00 $disk
-    sgdisk -t 3:8e00 $disk
+    sgdisk -t 1:8300 ${disk}
+    sgdisk -t 2:ef00 ${disk}
+    sgdisk -t 3:8e00 ${disk}
 
     # Label partitions
-    sgdisk -c 1:"boot" $disk
-    sgdisk -c 2:"esp" $disk
-    sgdisk -c 3:"lvm" $disk
+    sgdisk -c 1:"boot" ${disk}
+    sgdisk -c 2:"esp" ${disk}
+    sgdisk -c 3:"lvm" ${disk}
 
     # Create LUKS encrypted lvm partition
-    cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 $disk_lvm
+    cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 ${disk_lvm}
     cryptsetup luksOpen $disk_lvm lvm
 
     # Set-up lvm
@@ -176,16 +176,16 @@ function baseInstall {
     vgchange -ay
 
     # Create filesystem
-    mkfs.ext4 $disk_boot
-    mkfs.fat -F32 $disk_esp
+    mkfs.ext4 ${disk_boot}
+    mkfs.fat -F32 ${disk_esp}
     mkfs.ext4 /dev/main/lv_root
 
     # Mount target
     mount /dev/main/lv_root /mnt
     mkdir /mnt/boot
-    mount $disk_boot /mnt/boot
+    mount ${disk_boot} /mnt/boot
     mkdir /mnt/boot/esp
-    mount $disk_esp /mnt/boot/esp
+    mount ${disk_esp} /mnt/boot/esp
 
     # Generate /etc/fstab
     mkdir /mnt/etc
@@ -205,13 +205,13 @@ function baseInstall {
 
         ### Bootloader
         ## Reduce grub delay on boot
-        sed -i -e 's/GRUB_TIMEOUT=3/GRUB_TIMEOUT=0/g' /etc/default/grub
+        sed -i -e 's|GRUB_TIMEOUT=3|GRUB_TIMEOUT=0|g' /etc/default/grub
 
-        # $disk_lvm_sed is needed because of the slashes of $disk_lvm, that need to be escaped
-        sed -i -e "s/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${disk_lvm_sed}:main:allow-discards loglevel=3\"/g" /etc/default/grub
+        # ${disk_lvm_sed} is needed because of the slashes in ${disk_lvm}, that need to be escaped
+        sed -i -e "s|GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"|GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${disk_lvm_sed}:main:allow-discards loglevel=3\"|g" /etc/default/grub
 
         # Enable encrypted boot
-        sed -i -e 's/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g' /etc/default/grub
+        sed -i -e 's|#GRUB_ENABLE_CRYPTODISK=y|GRUB_ENABLE_CRYPTODISK=y|g' /etc/default/grub
 
         # Install grub
         grub-install --target=x86_64-efi --efi-directory=/boot/esp --bootloader-id=grub_uefi --recheck --debug
@@ -221,7 +221,7 @@ function baseInstall {
         grub-mkconfig -o /boot/grub/grub.cfg
 
         # Update initial ramdisk
-        sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)/g' /etc/mkinitcpio.conf
+        sed -i -e 's|HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)|HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)|g' /etc/mkinitcpio.conf
         mkinitcpio -p linux
 CHROOT
 }
@@ -238,25 +238,25 @@ function baseSetup {
         ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
         # Specify cores for simultaneous compiling
-        sudo sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$(nproc)\"/g" /etc/makepkg.conf
+        sudo sed -i "s|#MAKEFLAGS=\"-j2\"|MAKEFLAGS=\"-j$(nproc)\"|g" /etc/makepkg.conf
         # Change compression settings for "$nproc" cores.
-        sudo sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -T $(nproc) -z -)/g" /etc/makepkg.conf
+        sudo sed -i "s|COMPRESSXZ=(xz -c -z -)|COMPRESSXZ=(xz -c -T $(nproc) -z -)|g" /etc/makepkg.conf
 
         # Set hostname
-        echo $hostname > /etc/hostname
+        echo ${hostname} > /etc/hostname
 
         # Configure hosts file
-        echo "127.0.1.1 $hostname" >> /etc/hosts
+        echo "127.0.1.1 ${hostname}" >> /etc/hosts
 
         # Set-up user account
-        useradd -m -g users -G wheel $user
+        useradd -m -g users -G wheel ${user}
         echo "${user}:${user_password}" | chpasswd
 
         # Enable sudo-privileges for group "wheel"
-        sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+        sed -i 's|^# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|' /etc/sudoers
 
         # Set-up 8GB swapfile
-        if [ "$swap" == "yes" ]; then
+        if [ "${swap}" == "yes" ]; then
             dd if=/dev/zero of=/swapfile bs=1M count=8192 status=progress
             chmod 600 /swapfile
             mkswap /swapfile
@@ -379,13 +379,12 @@ function softwareDesk {
         ### AUR setup
         
         # Add sudo no-password privileges
-        sed -i 's/^# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+        sed -i 's|^# %wheel ALL=(ALL) NOPASSWD: ALL|%wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
 
-        su $user
+        su ${user}
 
-        # Install paru (AUR Helper)
-        cd /tmp
-        git clone "https://aur.archlinux.org/paru.git" && cd paru
+        # Install AUR Helper paru
+        cd /tmp && git clone "https://aur.archlinux.org/paru.git" && cd paru
         makepkg -sric --noconfirm && cd
 
         PKGS=(
@@ -394,16 +393,14 @@ function softwareDesk {
             'brave-bin'                 # Alternative chrome-based browser
         )
         for PKG in "${PKGS[@]}"; do
-        paru -Syu --noconfirm $PKG
+        paru -Syu ${PKG} --noconfirm --needed
         done
 
-        # Remove sudo no-password privileges
-        sed -i 's/^%wheel ALL=(ALL) NOPASSWD: ALL/# %wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-        
+        sudo su
         
         ### Desktop Environment (Plasma and Gnome)
         
-        if [ "$de" == "kde" ]; then
+        if [ "${de}" == "kde" ]; then
             PKGS=(
                 # Plasma -----------------------------------------------------------------------------
                 'plasma-meta'               # Desktop Environment
@@ -413,7 +410,7 @@ function softwareDesk {
                 'sddm'                      # Login Manager
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu --noconfirm $PKG
+            pacman -Syu ${PKG} --noconfirm --needed
             done
 
             PKGS=(
@@ -427,7 +424,7 @@ function softwareDesk {
             done
         fi
 
-        if [ "$de" == "gnome" ]; then
+        if [ "${de}" == "gnome" ]; then
             PKGS=(
                 # GNOME --------------------------------------------------------------------------------
                 'gnome'                     # Desktop Environment
@@ -435,14 +432,14 @@ function softwareDesk {
                 'gdm'                       # Login Manager
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu --noconfirm $PKG
+            pacman -Syu ${PKG} --noconfirm --needed
             done
         fi
     
     
         ### Laptop packages
         
-        if [ "$laptop" == "yes" ]; then
+        if [ "${laptop}" == "yes" ]; then
             PKGS=(
                 # WIRELESS ---------------------------------------------------------------------------
                 'dialog'                    # Enables shell scripts to trigger dialog boxex
@@ -460,7 +457,7 @@ function softwareDesk {
                 'tlp'                       # Advanced laptop power management
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu --noconfirm $PKG
+            pacman -Syu ${PKG} --noconfirm --needed
             done
         fi
 CHROOT
@@ -470,37 +467,41 @@ function final {
     arch-chroot /mnt /bin/bash <<"CHROOT"
 
         # Enable Login Manager
-        if [ "$de" == "kde" ]; then
+        if [ "${de}" == "kde" ]; then
             systemctl enable sddm
         fi
 
-        if [ "$de" == "gnome" ]; then
+        if [ "${de}" == "gnome" ]; then
             systemctl enable gdm
         fi
 
-        # Enable bluetooth daemon and setting it to auto-start
-        sed -i 's|#AutoEnable=false|AutoEnable=true|g' /etc/bluetooth/main.conf
-        systemctl enable bluetooth
+        if [ "${laptop}" == "yes" ]; then
+            systemctl enable bluetooth
+        fi
 
         # Enablie cups service daemon so we can print
         systemctl enable cups
 
         ### Set-up ZSH
         # Change shell
-        sudo chsh -s /bin/zsh $(whoami)
-        touch "~/.cache/zshhistory"
+        # Login as non-root user
+        #sudo chsh -s /bin/zsh $(whoami)
+        #touch "~/.cache/zshhistory"
         # Fetch zsh config
-        wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
-        mkdir -p "~/.zsh"
+        #wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
+        #mkdir -p "~/.zsh"
         # Setup Alias for powerlevel10k in ~/zsh/aliasrc
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
         # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+        
+        # Remove sudo no-password privileges
+        sudo sed -i 's|^%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
         
         # Clean orphans pkg
         if [[ ! -n $(pacman -Qdt) ]]; then
             echo "No orphans to remove."
         else
-            pacman -Rns $(pacman -Qdtq)
+            pacman -Rns $(pacman -Qdtq) --noconfirm --needed
         fi
 CHROOT
 }

@@ -197,7 +197,7 @@ function baseInstall {
 
     # Install basic Networking tools
     pacstrap /mnt networkmanager --noconfirm --needed
-    systemctl enable NetworkManager
+    systemctl enable --now NetworkManager
 
     arch-chroot /mnt /bin/bash <<"CHROOT"
     
@@ -488,6 +488,7 @@ function final {
         #wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
         # Powerlevel0k Prompt
         #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        #echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
         # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
         #sudo chsh -s /bin/zsh $(whoami).
 

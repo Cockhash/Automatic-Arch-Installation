@@ -372,31 +372,9 @@ function softwareDesk {
             'libreoffice'               # Office Suite
         )
         for PKG in "${PKGS[@]}"; do
-        sudo pacman -S ${PKG} --noconfirm --needed
+        pacman -S ${PKG} --noconfirm --needed
         done
         
-        
-        ### AUR setup
-        
-        # Add sudo no-password privileges
-        sed -i 's|^# %wheel ALL=(ALL) NOPASSWD: ALL|%wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
-
-        su ${user}
-
-        # Install AUR Helper paru
-        cd /tmp && git clone "https://aur.archlinux.org/paru.git" && cd paru
-        makepkg -sric --noconfirm && cd
-
-        PKGS=(
-            # UTILITIES --------------------------------------------------------------------------
-            'timeshift'                 # Backup programm
-            'brave-bin'                 # Alternative chrome-based browser
-        )
-        for PKG in "${PKGS[@]}"; do
-        paru -Syu ${PKG} --noconfirm --needed
-        done
-
-        sudo su
         
         ### Desktop Environment (Plasma and Gnome)
         
@@ -460,6 +438,26 @@ function softwareDesk {
             pacman -Syu ${PKG} --noconfirm --needed
             done
         fi
+
+        ### AUR setup
+        
+        # Add sudo no-password privileges
+        sed -i 's|^# %wheel ALL=(ALL) NOPASSWD: ALL|%wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
+
+        su ${user}
+
+        # Install AUR Helper paru
+        cd /tmp && git clone "https://aur.archlinux.org/paru.git" && cd paru
+        makepkg -sric --noconfirm && cd
+
+        PKGS=(
+            # UTILITIES --------------------------------------------------------------------------
+            'timeshift'                 # Backup programm
+            'brave-bin'                 # Alternative chrome-based browser
+        )
+        for PKG in "${PKGS[@]}"; do
+        paru -Syu ${PKG} --noconfirm --needed
+        done
 CHROOT
 }
 

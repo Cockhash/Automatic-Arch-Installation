@@ -199,9 +199,6 @@ function baseInstall {
     pacstrap /mnt networkmanager --noconfirm --needed
     systemctl enable NetworkManager
 
-    # Set-up mirrors for optimal download
-    reflector --country 'Germany' -l 5 -p https --sort rate --save /mnt/etc/pacman.d/mirrorlist
-
     arch-chroot /mnt /bin/bash <<"CHROOT"
     
         # Set root password
@@ -253,11 +250,11 @@ function baseSetup {
         echo "127.0.1.1 ${hostname}" >> /etc/hosts
 
         # Set-up user account
-        useradd -m -g users -G wheel ${user}
+        useradd -m -G users,wheel -s /bin/bash ${user}
         echo "${user}:${user_password}" | chpasswd
 
         # Enable sudo-privileges for group "wheel"
-        sed -i 's|^# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|' /etc/sudoers
+        sed -i 's|# %wheel ALL=(ALL) ALL|%wheel ALL=(ALL) ALL|' /etc/sudoers
 
         # Set-up 8GB swapfile
         if [ "${swap}" == "yes" ]; then
@@ -390,7 +387,7 @@ function softwareDesk {
                 'sddm'                      # Login Manager
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu ${PKG} --noconfirm --needed
+            pacman -S ${PKG} --noconfirm --needed
             done
 
             PKGS=(
@@ -412,7 +409,7 @@ function softwareDesk {
                 'gdm'                       # Login Manager
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu ${PKG} --noconfirm --needed
+            pacman -S ${PKG} --noconfirm --needed
             done
         fi
     
@@ -437,7 +434,7 @@ function softwareDesk {
                 'tlp'                       # Advanced laptop power management
             )
             for PKG in "${PKGS[@]}"; do
-            pacman -Syu ${PKG} --noconfirm --needed
+            pacman -S ${PKG} --noconfirm --needed
             done
         fi
 
@@ -458,7 +455,7 @@ function softwareDesk {
             'brave-bin'                 # Alternative chrome-based browser
         )
         for PKG in "${PKGS[@]}"; do
-        paru -Syu ${PKG} --noconfirm --needed
+        paru -S ${PKG} --noconfirm --needed
         done
 CHROOT
 }
@@ -495,7 +492,7 @@ function final {
         # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
         
         # Remove sudo no-password privileges
-        sudo sed -i 's|^%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
+        sudo sed -i 's|%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
         
         # Clean orphans pkg
         if [[ ! -n $(pacman -Qdt) ]]; then

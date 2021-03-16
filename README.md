@@ -20,12 +20,12 @@ cd automatic-arch-installation
 
 make it executable:
 ```
-chmod -R a+x $(pwd)
+chmod +x archmatic.sh
 ```
 
 then start the script:
 ```
-./0_installation.sh
+./archmatic.sh
 ```
 ______________________________________________________________________________
 ## Don't just run this script. Examine it. Customize it. Create your own version.

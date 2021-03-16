@@ -37,7 +37,7 @@ function preinstall {
 
     lsblk
 
-    echo -e "\nEnter your drive: /dev/sda or /dev/nvme0n1"
+    echo -e "\nEnter your drive: /dev/sda, /dev/nvme0n1, etc."
     read disk
 
     # Define disk variables for sda, sdb, sdc, nvme0n1, nvme0n2 or nvme0n3.
@@ -197,7 +197,7 @@ function baseInstall {
 
     # Install basic Networking tools
     pacstrap /mnt networkmanager --noconfirm --needed
-    systemctl enable --now NetworkManager
+    systemctl enable NetworkManager
 
     arch-chroot /mnt /bin/bash <<"CHROOT"
         
@@ -307,6 +307,10 @@ function softwareDesk {
             'system-config-printer'     # Printer setup  utility
 
             # TERMINAL UTILITIES -----------------------------------------------------------------
+            'zsh'                       # ZSH shell
+            'zsh-completions'           # Tab completion for ZSH
+            'zsh-autosuggestions'       # History-based suggestions
+            'zsh-syntax-highlighting'   # ZSH Syntax highlighting
             'cronie'                    # cron jobs
             'curl'                      # Remote content retrieval
             'wget'                      # Remote content retrieval
@@ -390,7 +394,7 @@ function softwareDesk {
             pacman -S ${PKG} --noconfirm --needed
             done
 
-            PKGS=(
+            PKGS=(               
                 # Remove unnecessary packages, that came as dependencies
                 'kde-education-meta'
                 'kde-games-meta'
@@ -453,6 +457,7 @@ function softwareDesk {
             # UTILITIES --------------------------------------------------------------------------
             'timeshift'                 # Backup programm
             'brave-bin'                 # Alternative chromium-based browser
+            'autojump'                  # Usefull ZSH Extension
         )
         for PKG in "${PKGS[@]}"; do
         paru -S ${PKG} --noconfirm --needed
@@ -480,17 +485,14 @@ function final {
         systemctl enable cups
 
         ### Set-up ZSH
-        # Change shell
-        #pacman -S zsh zsh-completions zsh-autosuggestions zsh-syntax-highlighting autojump
-        #su ${user}
-        #mkdir -p ~/.zsh
+        su ${user}
         # Fetch zsh config
-        #wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
-        # Powerlevel0k Prompt
-        #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-        #echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
+        wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
+        # Get Powerlevel0k Prompt
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+        # change shell to zsh
+        sudo chsh -s /bin/zsh ${user}
         # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
-        #sudo chsh -s /bin/zsh $(whoami).
 
         # Clean orphans pkg
         if [[ ! -n $(sudo pacman -Qdt) ]]; then

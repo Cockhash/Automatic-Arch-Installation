@@ -2,8 +2,8 @@
 
 #-------------------------------------------------------------------------
 #   Author: uououo 
-#   Last Edit: 14.03.2021
-#   Arch Linux Post Install Setup and Config
+#   Last Update: 2021/03/16
+#   Arch Linux Install, Setup and Config Script
 #-------------------------------------------------------------------------
 
 function preinstall {
@@ -31,7 +31,7 @@ function preinstall {
     timedatectl set-ntp true
 
     # Set-up mirrors for optimal download
-    reflector --country 'Germany' -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
+    reflector --verbose --country 'Germany' -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 
     # Prompts
 
@@ -375,7 +375,7 @@ function softwareDesk {
         done
         
         
-        ### Desktop Environment (Plasma and Gnome)
+        ### Desktop Environment (Plasma or GNOME)
         
         if [ "${de}" == "kde" ]; then
             PKGS=(
@@ -452,7 +452,7 @@ function softwareDesk {
         PKGS=(
             # UTILITIES --------------------------------------------------------------------------
             'timeshift'                 # Backup programm
-            'brave-bin'                 # Alternative chrome-based browser
+            'brave-bin'                 # Alternative chromium-based browser
         )
         for PKG in "${PKGS[@]}"; do
         paru -S ${PKG} --noconfirm --needed
@@ -481,25 +481,25 @@ function final {
 
         ### Set-up ZSH
         # Change shell
-        # Login as non-root user
-        #sudo chsh -s /bin/zsh $(whoami)
-        #touch "~/.cache/zshhistory"
+        #pacman -S zsh zsh-completions zsh-autosuggestions zsh-syntax-highlighting autojump
+        #su ${user}
+        #mkdir -p ~/.zsh
         # Fetch zsh config
         #wget https://raw.githubusercontent.com/Cockhash/zsh/main/.zshrc -O ~/.zshrc
-        #mkdir -p "~/.zsh"
-        # Setup Alias for powerlevel10k in ~/zsh/aliasrc
+        # Powerlevel0k Prompt
         #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
         # Install awesome terminl font from https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
-        
-        # Remove sudo no-password privileges
-        sudo sed -i 's|%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
-        
+        #sudo chsh -s /bin/zsh $(whoami).
+
         # Clean orphans pkg
-        if [[ ! -n $(pacman -Qdt) ]]; then
+        if [[ ! -n $(sudo pacman -Qdt) ]]; then
             echo "No orphans to remove."
         else
-            pacman -Rns $(pacman -Qdtq) --noconfirm
+            sudo pacman -Rns $(sudo pacman -Qdtq) --noconfirm
         fi
+
+        # Remove sudo no-password privileges
+        sudo sed -i 's|%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|g' /etc/sudoers
 CHROOT
 }
 
@@ -510,5 +510,5 @@ softwareDesk
 final
 
 umount -a
-echo "\nThe installation has finished. You can now boot into your system through \"reboot\"."
+echo -e "\nThe installation has finished. You can now boot into your system through \"reboot\"."
 exit

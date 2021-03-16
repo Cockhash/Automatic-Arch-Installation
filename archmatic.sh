@@ -27,11 +27,12 @@ function preinstall {
         exit
     fi
 
-    # update repos
-    pacman -Sy
-
     # sync systemclock
     timedatectl set-ntp true
+
+    # Set-up mirrors for optimal download
+    pacman -Sy reflector
+    reflector –country Germany –latest 3 –protocol https –sort rate –save /etc/pacman.d/mirrorlist
 
     # Prompts
 
@@ -40,6 +41,7 @@ function preinstall {
     echo -e "\nEnter your drive: /dev/sda or /dev/nvme0n1"
     read disk
 
+    # Define disk variables for sda, sdb, sdc, nvme0n1, nvme0n2 or nvme0n3.
     if [ "${disk}" == "/dev/nvme0n1" ]; then
         disk_boot="${disk}p1"
         disk_esp="${disk}p2"
@@ -82,13 +84,13 @@ function preinstall {
         disk_lvm_sed="\/dev\/sdc3"
     fi
 
-    echo -e "\nEnter hostname:"
+    echo -e "\nSet hostname:"
     read hostname
 
-    echo -e "\nEnter ROOT password:"
+    echo -e "\nSet ROOT password:"
     read -s root_password
 
-    echo -e "\nVerify the ROOT password:"
+    echo -e "\nVerify ROOT password:"
     read -s root_password2
 
     # Check if both passwords match
@@ -97,10 +99,10 @@ function preinstall {
         exit
     fi
 
-    echo -e "\nEnter username:"
+    echo -e "\nSet username:"
     read user
 
-    echo -e "\nEnter USER password:"
+    echo -e "\nSet USER password:"
     read -s user_password
 
     echo -e "\nVerify USER password:"
@@ -112,17 +114,17 @@ function preinstall {
         exit
     fi
 
-    echo -e "\nSelect Distro Environment: [gnome/kde]"
+    echo -e "\nSelect Distro Environment: [gnome/kde/none]"
     read de
 
-    echo -e "\nDo you want a swapfile? [yes/no]"
+    echo -e "\n8GB Swapfile: [yes/no]"
     read swap
 
-    echo -e "\nDo you want the Laptop packages (wifi, bluetoth, etc.)? [yes/no]"
-    read ucode
-
-    echo -e "\nWhat CPU do you have? [intel/amd]"
+    echo -e "\nLaptop packages (wifi, bluetoth, etc.): [yes/no]"
     read laptop
+
+    echo -e "\nSelect your CPU: [amd/intel/vbox]"
+    read ucode
 
     # export environment variabels
     export disk
@@ -136,8 +138,8 @@ function preinstall {
     export user_password
     export de
     export swap
-    export ucode
     export laptop
+    export ucode
 }
 
 function baseInstall {
@@ -191,12 +193,15 @@ function baseInstall {
     mkdir /mnt/etc
     genfstab -Up /mnt >> /mnt/etc/fstab
 
-    # Install base
+    # Install basic packages
     pacstrap /mnt base base-devel linux linux-firmware linux-headers grub efibootmgr os-prober dosfstools mtools lvm2 --noconfirm --needed
 
     # Install basic Networking tools
-    pacstrap /mnt networkmanager netctl --noconfirm --needed
+    pacstrap /mnt networkmanager --noconfirm --needed
     systemctl enable NetworkManager
+
+    # Set-up mirrors for optimal download
+    reflector –country Germany –latest 3 –protocol https –sort rate –save /mnt/etc/pacman.d/mirrorlist
 
     arch-chroot /mnt /bin/bash <<"CHROOT"
     
@@ -235,7 +240,7 @@ function baseSetup {
         echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 
         # Set time zone
-        ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+        ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
         # Specify cores for simultaneous compiling
         sudo sed -i "s|#MAKEFLAGS=\"-j2\"|MAKEFLAGS=\"-j$(nproc)\"|g" /etc/makepkg.conf
@@ -312,13 +317,11 @@ function softwareDesk {
             'htop'                      # Process viewer
             'hardinfo'                  # Hardware info app
             'neofetch'                  # Shows system info when you launch terminal
-            'ntp'                       # Network Time Protocol to set time via network.
             'numlockx'                  # Turns on numlock in X11
             'openssh'                   # SSH connectivity tools
             'p7zip'                     # 7z compression program
             'rsync'                     # Remote file sync utility
             'speedtest-cli'             # Internet speed via terminal
-            'terminus-font'             # Font package with some bigger fonts for login terminal
             'unrar'                     # RAR compression program
             'unzip'                     # Zip compression program
             'vim'                       # Text Editor
@@ -442,7 +445,7 @@ function softwareDesk {
         ### AUR setup
         
         # Add sudo no-password privileges
-        sed -i 's|^# %wheel ALL=(ALL) NOPASSWD: ALL|%wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
+        sed -i 's|# %wheel ALL=(ALL) NOPASSWD: ALL|%wheel ALL=(ALL) NOPASSWD: ALL|' /etc/sudoers
 
         su ${user}
 
@@ -499,7 +502,7 @@ function final {
         if [[ ! -n $(pacman -Qdt) ]]; then
             echo "No orphans to remove."
         else
-            pacman -Rns $(pacman -Qdtq) --noconfirm --needed
+            pacman -Rns $(pacman -Qdtq) --noconfirm
         fi
 CHROOT
 }
@@ -510,5 +513,6 @@ baseSetup
 softwareDesk
 final
 
-echo "\nThe installation has finished."
+umount -a
+echo "\nThe installation has finished. You can now boot into your system through \"reboot\"."
 exit

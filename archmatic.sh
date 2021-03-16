@@ -31,7 +31,7 @@ function preinstall {
     timedatectl set-ntp true
 
     # Set-up mirrors for optimal download
-    reflector –country Germany –latest 3 –protocol https –sort rate –save /etc/pacman.d/mirrorlist
+    reflector --country 'Germany' -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
 
     # Prompts
 

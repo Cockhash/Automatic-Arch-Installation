@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 #-------------------------------------------------------------------------
-#   Author: uououo 
+#   Maintainer: cockhash <mail> 
+#   Description: Arch Linux Install, Setup and Config Script
+#   License: GPL3
 #   Last Update: 2021/03/16
-#   Arch Linux Install, Setup and Config Script
 #-------------------------------------------------------------------------
 
 function preinstall {
@@ -505,6 +506,8 @@ function final {
         sudo sed -i 's|%wheel ALL=(ALL) NOPASSWD: ALL|# %wheel ALL=(ALL) NOPASSWD: ALL|g' /etc/sudoers
 CHROOT
 }
+
+# call funtions
 
 preinstall
 baseInstall

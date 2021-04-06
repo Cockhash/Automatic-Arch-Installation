@@ -363,7 +363,7 @@ function softwareDesk {
 
             # MEDIA ------------------------------------------------------------------------------
             'obs-studio'                # Record your screen
-            'vnc'                       # Video player
+            'vlc'                       # Video player
 
             # GRAPHICS AND DESIGN ----------------------------------------------------------------
             'gimp'                      # GNU Image Manipulation Program

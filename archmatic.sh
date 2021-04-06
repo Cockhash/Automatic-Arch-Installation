@@ -345,6 +345,7 @@ function softwareDesk {
             'remmina'                   # Remote Connection
             'veracrypt'                 # Disc encryption utility
             'keepassxc'                 # Password Manager
+            'syncthing'                 # Encrypted File Sync
 
             # DEVELOPMENT ------------------------------------------------------------------------
             'clang'                     # C Lang compiler
@@ -368,7 +369,7 @@ function softwareDesk {
             'gimp'                      # GNU Image Manipulation Program
 
             # BROWSER ----------------------------------------------------------------------------
-            'firefox'                   # Browser
+            'firefox'                    # Browser
             'torbrowser-launcher'       # Onion Routing
 
             # COMMUNICATION ----------------------------------------------------------------------
@@ -376,7 +377,7 @@ function softwareDesk {
             'element-desktop'           # Matrix Client for Communication
 
             # OFFICE -----------------------------------------------------------------------------
-            'libreoffice'               # Office Suite
+            'libreoffice'                 # Office Suite
         )
         for PKG in "${PKGS[@]}"; do
         pacman -S ${PKG} --noconfirm --needed
@@ -488,6 +489,9 @@ function final {
         # Enablie cups service daemon so we can print
         systemctl enable cups
 
+        # Enable syncthing for user (never for root!)
+        systemctl enable syncthing@${user}.service
+        
         ### Set-up ZSH
         su ${user}
         # Fetch zsh config

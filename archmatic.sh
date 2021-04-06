@@ -164,8 +164,11 @@ function baseInstall {
     sgdisk -c 2:"esp" ${disk}
     sgdisk -c 3:"lvm" ${disk}
 
+    # Load kernel module for cryptsetup
+    modprobe dm-crypt
+
     # Create LUKS encrypted lvm partition
-    cryptsetup luksFormat -c aes-xts-plain -y -s 512 -h sha512 ${disk_lvm}
+    cryptsetup luksFormat -c aes-xts-plain64 -y -s 512 -h sha512 ${disk_lvm}
     cryptsetup luksOpen $disk_lvm lvm
 
     # Set-up lvm
@@ -173,7 +176,7 @@ function baseInstall {
     vgcreate main /dev/mapper/lvm
     lvcreate -l 100%FREE -n lv_root main
 
-    modprobe dm-crypt
+    # Scan for vgs and activate them all
     vgscan
     vgchange -ay
 

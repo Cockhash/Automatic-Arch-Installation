@@ -173,8 +173,8 @@ function baseInstall {
 
     # Set-up lvm
     pvcreate /dev/mapper/lvm
-    vgcreate main /dev/mapper/lvm
-    lvcreate -l 100%FREE -n lv_root main
+    vgcreate vg0 /dev/mapper/lvm
+    lvcreate -l 100%FREE -n lv_root vg0
 
     # Scan for vgs and activate them all
     vgscan
@@ -183,10 +183,10 @@ function baseInstall {
     # Create filesystem
     mkfs.ext4 ${disk_boot}
     mkfs.fat -F32 ${disk_esp}
-    mkfs.ext4 /dev/main/lv_root
+    mkfs.ext4 /dev/vg0/lv_root
 
     # Mount target
-    mount /dev/main/lv_root /mnt
+    mount /dev/vg0/lv_root /mnt
     mkdir /mnt/boot
     mount ${disk_boot} /mnt/boot
     mkdir /mnt/boot/esp
@@ -201,9 +201,11 @@ function baseInstall {
 
     # Install basic Networking tools
     pacstrap /mnt networkmanager --noconfirm --needed
-    systemctl enable NetworkManager
 
     arch-chroot /mnt /bin/bash <<"CHROOT"
+        
+        # Enable NetworkManager
+        systemctl enable NetworkManager
         
         # Set root password
         echo "root:${root_password}" | chpasswd
@@ -213,7 +215,7 @@ function baseInstall {
         sed -i -e 's|GRUB_TIMEOUT=3|GRUB_TIMEOUT=0|g' /etc/default/grub
 
         # ${disk_lvm_sed} is needed because of the slashes in ${disk_lvm}, that need to be escaped
-        sed -i -e "s|GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"|GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${disk_lvm_sed}:main:allow-discards loglevel=3\"|g" /etc/default/grub
+        sed -i -e "s|GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=3 quiet\"|GRUB_CMDLINE_LINUX_DEFAULT=\"cryptdevice=${disk_lvm_sed}:vg0:allow-discards loglevel=3\"|g" /etc/default/grub
 
         # Enable encrypted boot
         sed -i -e 's|#GRUB_ENABLE_CRYPTODISK=y|GRUB_ENABLE_CRYPTODISK=y|g' /etc/default/grub
@@ -330,14 +332,15 @@ function softwareDesk {
             'unzip'                     # Zip compression program
             'vim'                       # Text Editor
             'nano'                      # Text Editor
-            'reflector'                 # Tool for fetching latest mirrors
+            'reflector'                  # Tool for fetching latest mirrors
 
             # DISK UTILITIES ---------------------------------------------------------------------
             'android-tools'             # ADB for Android
             'autofs'                    # Auto-mounter
             'dosfstools'                # DOS Support
             'exfat-utils'               # Mount exFat drives
-            'filezilla'                 # SSH File Transfer
+            'filezilla'                  # SSH File Transfer
+            'balena-etcher'             # Bootable USB Creator
 
             # GENERAL UTILITIES ------------------------------------------------------------------
             'freerdp'                   # RDP Connections
@@ -346,7 +349,8 @@ function softwareDesk {
             'veracrypt'                 # Disc encryption utility
             'keepassxc'                 # Password Manager
             'syncthing'                 # Encrypted File Sync
-
+            'qbittorrent'               # Great Torrent Client
+   
             # DEVELOPMENT ------------------------------------------------------------------------
             'clang'                     # C Lang compiler
             'cmake'                     # Cross-platform open-source make system
@@ -416,6 +420,7 @@ function softwareDesk {
                 'gnome'                     # Desktop Environment
                 'gnome-tweaks'              # GNOME tuning tool
                 'gdm'                       # Login Manager
+                'chrome-gnome-shell'        # GNOME Shell integration (not only for chrome)
             )
             for PKG in "${PKGS[@]}"; do
             pacman -S ${PKG} --noconfirm --needed
@@ -462,7 +467,8 @@ function softwareDesk {
             # UTILITIES --------------------------------------------------------------------------
             'timeshift'                 # Backup programm
             'brave-bin'                 # Alternative chromium-based browser
-            'autojump'                  # Usefull ZSH Extension
+            'vscodium-bin'              # Binary VS Code without MS branding/telemetry
+            'signal-desktop-beta-bin'   # Signal communication desktop client
         )
         for PKG in "${PKGS[@]}"; do
         paru -S ${PKG} --noconfirm --needed

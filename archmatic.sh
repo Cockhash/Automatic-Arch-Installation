@@ -469,6 +469,7 @@ function softwareDesk {
             'brave-bin'                 # Alternative chromium-based browser
             'vscodium-bin'              # Binary VS Code without MS branding/telemetry
             'signal-desktop-beta-bin'   # Signal communication desktop client
+            'scrcpy'                    # Android remot control tool
         )
         for PKG in "${PKGS[@]}"; do
         paru -S ${PKG} --noconfirm --needed

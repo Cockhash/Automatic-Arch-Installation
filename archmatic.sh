@@ -418,9 +418,10 @@ function softwareDesk {
             PKGS=(
                 # GNOME --------------------------------------------------------------------------------
                 'gnome'                     # Desktop Environment
-                'gnome-tweaks'              # GNOME tuning tool
                 'gdm'                       # Login Manager
-                'chrome-gnome-shell'        # GNOME Shell integration (not only for chrome)
+                'gnome-tweaks'              # GNOME tweaking tool
+                'seahorse'                  # SSH/PGP management front-end
+                'chrome-gnome-shell'        # GNOME Shell integration (not for chrome only)
             )
             for PKG in "${PKGS[@]}"; do
             pacman -S ${PKG} --noconfirm --needed

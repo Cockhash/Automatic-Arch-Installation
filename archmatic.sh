@@ -289,6 +289,10 @@ function softwareDesk {
             'xorg-server'               # Xorg server
             'xorg-xinit'                # Xorg init
             'xorg-xinput'               # Xorg input
+            'xorg-xwayland'             # Temp: Wayland Support
+            'xorg-xeyes'                # Temp: Wayland Support
+            'qt5-wayland'               # Temp: Wayland Support
+            'glfw-wayland'              # Temp: Wayland Support
             'mesa'                      # Open source version of OpenGL
 
             # NETWORK SETUP ----------------------------------------------------------------------

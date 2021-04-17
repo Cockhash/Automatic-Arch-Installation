@@ -300,12 +300,15 @@ function softwareDesk {
             'network-manager-applet'    # System tray icon/utility for network connectivity
 
             # AUDIO ------------------------------------------------------------------------------
-            'alsa-utils'                # Advanced Linux Sound Architecture (ALSA) Components https://alsa.opensrc.org/
-            'alsa-plugins'              # ALSA plugins
-            'pulseaudio'                # Pulse Audio sound components
-            'pulseaudio-alsa'           # ALSA configuration for pulse audio
-            'pavucontrol'               # Pulse Audio volume control
-            'pnmixer'                   # System tray volume control
+            'pipewire'                  # Temp: Pipewire Support
+            'pipewire-alsa'             # Temp: Pipewire Support
+            'pipewirde-pulse'           # Temp: Pipewire Support
+            'alsa-utils'               # Advanced Linux Sound Architecture (ALSA) Components https://alsa.opensrc.org/
+            #'alsa-plugins'             # ALSA plugins
+            #'pulseaudio'               # Pulse Audio sound components
+            #'pulseaudio-alsa'          # ALSA configuration for pulse audio
+            #'pavucontrol'              # Pulse Audio volume control
+            #'pnmixer'                  # System tray volume control
 
             # PRINTERS ---------------------------------------------------------------------------
             'cups'                      # Open source printer drivers
@@ -313,7 +316,7 @@ function softwareDesk {
             'ghostscript'               # PostScript interpreter
             'gsfonts'                   # Adobe Postscript replacement fonts
             'hplip'                     # HP Drivers
-            'system-config-printer'     # Printer setup  utility
+            'system-config-printer'      # Printer setup  utility
 
             # TERMINAL UTILITIES -----------------------------------------------------------------
             'zsh'                       # ZSH shell

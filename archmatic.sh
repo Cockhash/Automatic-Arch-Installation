@@ -286,11 +286,8 @@ function softwareDesk {
         
         PKGS=(
             # XORG DISPLAY RENDERING -------------------------------------------------------------
-            'xorg'                      # Base Package
             'xorg-drivers'              # Display Drivers
-            'xorg-server'               # Xorg server
-            'xorg-xinit'                # Xorg init
-            'xorg-xinput'               # Xorg input
+            'xorg-xlsclients'           # Temp: Wayland Support
             'xorg-xwayland'             # Temp: Wayland Support
             'qt5-wayland'               # Temp: Wayland Support
             'glfw-wayland'              # Temp: Wayland Support

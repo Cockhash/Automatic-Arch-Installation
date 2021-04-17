@@ -30,6 +30,8 @@ function preinstall {
 
     # sync systemclock
     timedatectl set-ntp true
+    timedatectl status
+    sleep 5
 
     # Set-up mirrors for optimal download
     reflector --verbose --country 'Germany' -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist
